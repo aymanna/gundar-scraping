@@ -26,14 +26,14 @@ with open(path, mode, newline='') as f:
             url = f'{base_url}cariMhsBaru/{letter}?page={page}'
 
             res = get(url)
-            raw_html = BeautifulSoup(res.text, 'html.parser')
-            raw_table = raw_html.find('table')
+            html = BeautifulSoup(res.text, 'html.parser')
+            table = html.find('table')
 
-            if raw_table is None:
+            if table is None:
                 print(f'Finished inserting {users} users from the letter {letter}')
                 break
 
-            rows = raw_table.find_all('tr')
+            rows = table.find_all('tr')
 
             for row in rows[1:]:
                 items = findall('<td.*>(.+)</td>', str(row))
