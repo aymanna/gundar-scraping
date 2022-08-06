@@ -1,15 +1,13 @@
 import os
 import csv
-import re
-import requests
+from re import findall
+from requests import get
 from bs4 import BeautifulSoup
 from string import ascii_uppercase
 
 
-path = 'gundar-scraping.csv'       # change path if necessary
-url_1 = 'https://baak.gunadarma.ac.id/cariMhsBaru/'
-url_2 = '?teks=&tipeMhsBaru=&page='
-table_index = 'table table-custom table-primary table-fixed bordered-table stacktable large-only'
+path = 'gundar-scraping.csv'
+base_url = 'https://baak.gunadarma.ac.id/'
 
 if os.path.isfile(path):
     mode = 'a'
@@ -25,29 +23,21 @@ with open(path, mode, newline='') as f:
 
         while True:
             page += 1
-            url = f"{url_1}{letter}{url_2}{page}"
+            url = f'{base_url}cariMhsBaru/{letter}?page={page}'
 
-            # fetching the table from the url
-            r = requests.get(url)
-            soup = BeautifulSoup(r.text, 'html.parser')
-            raw_html = soup.find('table', class_=table_index)
+            res = get(url)
+            raw_html = BeautifulSoup(res.text, 'html.parser')
+            raw_table = raw_html.find('table')
 
-            try:
-                table = raw_html.find_all('tr')[1:]
-            except Exception:
-                print(f"Finished inserting {users} users from the letter {letter}")
+            if raw_table is None:
+                print(f'Finished inserting {users} users from the letter {letter}')
                 break
 
-            # cleaning each row from the table
-            for row in table:
-                clean_row = []
-                row = str(row).split('\n')[2:-2]
+            rows = raw_table.find_all('tr')
 
-                for item in row:
-                    data = re.findall('.+>(.+)<', item)
-                    clean_row.append(data[0])
-
-                writer.writerow(clean_row)
+            for row in rows[1:]:
+                items = findall('<td.*>(.+)</td>', str(row))
+                writer.writerow(items[1:])
                 users += 1
 
-print("Web scraping completed.")
+print('Web scraping completed.')
