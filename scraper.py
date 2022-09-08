@@ -19,7 +19,7 @@ def scraper(arg, filescript):
     with open(file, mode, newline='') as f:
         w = writer(f)
 
-        for letter in ['x']:
+        for letter in ascii_uppercase:
             page = 0
             users = 0
 
