@@ -1,4 +1,3 @@
-import os
 from os.path import isfile
 from csv import writer
 from re import findall
@@ -7,7 +6,7 @@ from bs4 import BeautifulSoup
 from string import ascii_uppercase
 
 
-def scraper(arg, filescript):
+def scraper(method, filescript):
     file = filescript.split('.py')[0] + '.csv'
     url = 'https://baak.gunadarma.ac.id/'
 
@@ -25,7 +24,7 @@ def scraper(arg, filescript):
 
             while True:
                 page += 1
-                target_url = f'{url}{arg}/{letter}?page={page}'
+                target_url = f'{url}{method}/{letter}?page={page}'
 
                 res = get(target_url)
                 html = BeautifulSoup(res.text, 'html.parser')
