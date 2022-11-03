@@ -10,6 +10,10 @@ pip install -r requirements.txt
 
 ## Run
 
-```
-python scraper.py
+```bash
+# get new students
+python new_student.py
+
+# get new classes
+python new_class.py
 ```
